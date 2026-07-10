@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\kategoriItemsController;
+use App\Http\Controllers\MasterItemsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +34,15 @@ Route::get('/master-items/delete/{id}', [App\Http\Controllers\MasterItemsControl
 
 
 Route::get('/master-items/update-random-data', [App\Http\Controllers\MasterItemsController::class, 'updateRandomData']);
+
+route::get('/kategori-items', [App\Http\Controllers\KategoriItemsController::class, 'index']);
+route::get('/kategori-items/create', [App\Http\Controllers\KategoriItemsController::class, 'create']);
+route::post('/kategori-items/store', [App\Http\Controllers\KategoriItemsController::class, 'store']);
+route::get('/kategori-items/edit/{id}', [App\Http\Controllers\KategoriItemsController::class, 'edit']);
+route::post('/kategori-items/update/{id}', [App\Http\Controllers\KategoriItemsController::class, 'update']);
+route::get('/kategori-items/delete/{id}', [App\Http\Controllers\KategoriItemsController::class, 'destroy']);
+
+route::get('/kategori-items/view/{id}', [App\Http\Controllers\KategoriItemsController::class, 'show']);
+route::get('/kategori-items/pdf/{id}', [App\Http\Controllers\KategoriItemsController::class, 'downloadPdf']);
+
+route::get('/kategori-items/export-excel', [App\Http\Controllers\MasterItemsController::class, 'exportExcel']);

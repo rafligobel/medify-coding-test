@@ -43,6 +43,7 @@ route::post('/kategori-items/update/{id}', [App\Http\Controllers\KategoriItemsCo
 route::get('/kategori-items/delete/{id}', [App\Http\Controllers\KategoriItemsController::class, 'destroy']);
 
 route::get('/kategori-items/view/{id}', [App\Http\Controllers\KategoriItemsController::class, 'show']);
-route::get('/kategori-items/pdf/{id}', [App\Http\Controllers\KategoriItemsController::class, 'downloadPdf']);
+Route::get('/kategori-items/{id}/pdf', [App\Http\Controllers\KategoriItemsController::class, 'downloadPdf']);
 
+Route::get('/master-items/export-excel', [App\Http\Controllers\MasterItemsController::class, 'exportExcel']);
 route::get('/kategori-items/export-excel', [App\Http\Controllers\MasterItemsController::class, 'exportExcel']);

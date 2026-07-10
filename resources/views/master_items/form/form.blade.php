@@ -1,4 +1,4 @@
-<form method="POST" enctype="multipart/form-data">
+<form action="{{ url()->current() }}" method="POST" enctype="multipart/form-data">
     @csrf
     @if ($method == 'edit')
         <div class="form-group mb-3">
@@ -27,11 +27,11 @@
         <label>Supplier</label>
         <select class="form-control" required name="supplier">
             <option @if ($selected == '') selected @endif value="">--Pilih--</option>
-            <option @if ($selected == 'Tokopaedi') selected @endif>Tokopaedi</option>
-            <option @if ($selected == 'Bukulapuk') selected @endif>Bukulapuk</option>
-            <option @if ($selected == 'TokoBagas') selected @endif>TokoBagas</option>
-            <option @if ($selected == 'E Commurz') selected @endif>E Commurz</option>
-            <option @if ($selected == 'Blublu') selected @endif>Blublu</option>
+            <option @if ($selected == 'Tokopaedi') selected @endif value="Tokopaedi">Tokopaedi</option>
+            <option @if ($selected == 'Bukulapuk') selected @endif value="Bukulapuk">Bukulapuk</option>
+            <option @if ($selected == 'TokoBagas') selected @endif value="TokoBagas">TokoBagas</option>
+            <option @if ($selected == 'E Commurz') selected @endif value="E Commurz">E Commurz</option>
+            <option @if ($selected == 'Blublu') selected @endif value="Blublu">Blublu</option>
         </select>
     </div>
 
@@ -40,17 +40,16 @@
         <label>Jenis</label>
         <select class="form-control" required name="jenis">
             <option @if ($selected == '') selected @endif value="">--Pilih--</option>
-            <option @if ($selected == 'Obat') selected @endif>Obat</option>
-            <option @if ($selected == 'Alkes') selected @endif>Alkes</option>
-            <option @if ($selected == 'Matkes') selected @endif>Matkes</option>
-            <option @if ($selected == 'Umum') selected @endif>Umum</option>
-            <option @if ($selected == 'ATK') selected @endif>ATK</option>
+            <option @if ($selected == 'Obat') selected @endif value="Obat">Obat</option>
+            <option @if ($selected == 'Alkes') selected @endif value="Alkes">Alkes</option>
+            <option @if ($selected == 'Matkes') selected @endif value="Matkes">Matkes</option>
+            <option @if ($selected == 'Umum') selected @endif value="Umum">Umum</option>
+            <option @if ($selected == 'ATK') selected @endif value="ATK">ATK</option>
         </select>
     </div>
 
-    {{-- Field Upload Foto Baru --}}
     <div class="form-group mb-3">
-        <label>Foto Item</label>
+        <label>Foto Item (Opsional)</label>
         <input type="file" name="foto" class="form-control" accept="image/*">
         @if (isset($item->foto) && $item->foto != '')
             <small class="text-muted d-block mt-1">Sudah ada foto: <a href="{{ asset($item->foto) }}"
@@ -58,10 +57,11 @@
         @endif
     </div>
 
-    {{-- Field Select Multiple Kategori Baru --}}
     <div class="form-group mb-3">
         <label>Kategori</label>
-        <select name="kategori_ids[]" class="form-control" multiple required>
+        {{-- Tampilan telah diubah menjadi dropdown tunggal (seperti form Jenis) --}}
+        <select name="kategori_ids[]" class="form-control">
+            <option value="" disabled {{ empty($item_kategoris) ? 'selected' : '' }}>--Pilih--</option>
             @if (isset($kategoris))
                 @foreach ($kategoris as $kat)
                     <option value="{{ $kat->id }}" @if (isset($item_kategoris) && in_array($kat->id, $item_kategoris)) selected @endif>
@@ -70,8 +70,6 @@
                 @endforeach
             @endif
         </select>
-        <small class="text-muted">Tekan CTRL (Windows) atau CMD (Mac) pada keyboard untuk memilih lebih dari 1
-            kategori.</small>
     </div>
 
     <button type="submit" class="btn btn-primary mt-3">Submit</button>

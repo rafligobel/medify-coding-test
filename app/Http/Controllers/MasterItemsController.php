@@ -25,16 +25,16 @@ class MasterItemsController extends Controller
         if (!empty($kode)) $data_search->where('kode', $kode);
         if (!empty($nama)) $data_search->where('nama', 'LIKE', '%' . $nama . '%');
 
-        if (!empty($hargamin)) {
+        if (isset($hargamin) && $hargamin !== '') {
             $data_search->where('harga_beli', '>=', $hargamin);
         }
-        if (!empty($hargamax)) {
+        if (isset($hargamax) && $hargamax !== '') {
             $data_search->where('harga_beli', '<=', $hargamax);
         }
 
-        $data_search = $data_search->select('id', 'kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier', 'foto')->orderBy('id')->get();
+        $data_search = $data_search->select('id', 'kode', 'nama', 'jenis', 'harga_beli', 'laba', 'supplier', 'foto')->orderBy('id', 'desc')->get();
 
-        return json_encode([
+        return response()->json([
             'status' => 200,
             'data' => $data_search
         ]);
@@ -72,8 +72,8 @@ class MasterItemsController extends Controller
     {
         if ($method == 'new') {
             $data_item = new MasterItem;
-            $kode = MasterItem::count();
-            $kode = $kode + 1;
+            $max_id = MasterItem::withTrashed()->max('id') ?? 0;
+            $kode = $max_id + 1;
             $kode = str_pad($kode, 5, '0', STR_PAD_LEFT);
         } else {
             $data_item = MasterItem::find($id);
@@ -122,19 +122,20 @@ class MasterItemsController extends Controller
 
         echo '<table border="1">';
         echo '<tr>
-                <th>No</th>
-                <th>Nama Kategori</th>
-                <th>Nama Items</th>
-                <th>Nama Supplier</th>
-                <th>Harga</th>
-                <th>Laba</th>
-                <th>Harga Jual</th>
-              </tr>'; // [cite: 19, 20, 21, 22, 23, 24, 25]
+                <th style="background-color: #f2f2f2;">No</th>
+                <th style="background-color: #f2f2f2;">Nama Kategori</th>
+                <th style="background-color: #f2f2f2;">Nama Items</th>
+                <th style="background-color: #f2f2f2;">Nama Supplier</th>
+                <th style="background-color: #f2f2f2;">Harga</th>
+                <th style="background-color: #f2f2f2;">Laba (%)</th>
+                <th style="background-color: #f2f2f2;">Harga Jual</th>
+              </tr>';
 
         $no = 1;
         foreach ($items as $item) {
             $kategoriNames = $item->kategoris->pluck('nama')->implode(', ');
-            $hargaJual = $item->harga_beli + $item->laba;
+
+            $hargaJual = $item->harga_beli + ($item->harga_beli * $item->laba / 100);
 
             echo '<tr>';
             echo '<td>' . $no++ . '</td>';
@@ -143,7 +144,7 @@ class MasterItemsController extends Controller
             echo '<td>' . $item->supplier . '</td>';
             echo '<td>' . $item->harga_beli . '</td>';
             echo '<td>' . $item->laba . '</td>';
-            echo '<td>' . $hargaJual . '</td>';
+            echo '<td>' . round($hargaJual) . '</td>';
             echo '</tr>';
         }
         echo '</table>';

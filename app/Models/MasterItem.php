@@ -9,10 +9,9 @@ use App\Models\KategoriItem;
 
 class MasterItem extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    public function kategori_items()
+    public function kategoris()
     {
         return $this->belongsToMany(KategoriItem::class, 'kategori_item_master_item');
     }
